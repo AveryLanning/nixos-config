@@ -5,22 +5,31 @@
 
 {
   imports =
-    [ (modulesPath + "/profiles/qemu-guest.nix")
+    [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/43edea73-f9f4-4bf9-85f9-5187301bb69e";
+    { device = "/dev/mapper/luks-329affc7-6962-4b74-ade2-4223fbdd2f4c";
       fsType = "ext4";
     };
 
+  boot.initrd.luks.devices."luks-329affc7-6962-4b74-ade2-4223fbdd2f4c".device = "/dev/disk/by-uuid/329affc7-6962-4b74-ade2-4223fbdd2f4c";
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/66BD-0867";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/b03017b6-9667-40fe-a8a6-ab385f20c8e5"; }
+    [ { device = "/dev/mapper/luks-7fd1c891-8a9b-48f6-8107-28f3f524c5d5"; }
     ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

@@ -12,11 +12,11 @@
     ];
 
   # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  boot.initrd.luks.devices."luks-7fd1c891-8a9b-48f6-8107-28f3f524c5d5".device = "/dev/disk/by-uuid/7fd1c891-8a9b-48f6-8107-28f3f524c5d5";
+  networking.hostName = "averyNix"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -56,24 +56,36 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.avery = {
     isNormalUser = true;
-    description = "avery";
+    description = "Avery Lanning";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.nushell;
     packages = with pkgs; [];
   };
 
+  #The xmonad desktop
+  services.xserver = {
+    enable = true;
+    windowManager.xmonad.enable = true;
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
-  kakoune
-  home-manager
-  nushell
-  aerc
-  notmuch
-  yazi
-  fd
+    haskellPackages.xmonad
+    haskellPackages.xmonad-contrib
+    xmobar #status bar
+    dmenu #launcher
+    xterm #fallback terminal
+    kakoune
+    home-manager
+    nushell
+    aerc
+    notmuch
+    yazi
+    fd
+    git
+    unzip
+    qutebrowser
   ];
 
   environment.variables = {
@@ -99,7 +111,7 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  # services.openssh.enable = true;
 
 
   # Open ports in the firewall.

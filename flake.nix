@@ -8,7 +8,7 @@
   };
 
   outputs = { nixpkgs, home-manager, ... }: {
-    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.averyNix = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
 
       modules = [

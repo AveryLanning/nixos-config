@@ -13,22 +13,33 @@
 
   programs.bash.enable = true;
 
-  programs.yazi = {
+  programs.git = {
     enable = true;
-    enableNushellIntegration = true;
+      
+    userName = "Avery Lanning";
+    userEmail = "avery@lanning.org";
 
-    keymap = {
-      manager = {
-        append_keymap = [
-          {
-            on = [ "z" ];
-            run = "quit";
-            desc = "quit";
-          }
-        ];
-      };
+    extraConfig = {
+        init.defaultBranch = "main";
     };
   };
+      
+  #programs.yazi = {
+  #  enable = true;
+  #  enableNushellIntegration = true;
+  #
+  #  keymap = {
+  #    manager = {
+  #      append_keymap = [
+  #        {
+  #          on = [ "z" ];
+  #          run = "quit";
+  #          desc = "quit";
+  #        }
+  #      ];
+  #    };
+  #  };
+  #};
 
   programs.kakoune = {
     enable = true;
