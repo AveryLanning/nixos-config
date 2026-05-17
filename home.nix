@@ -16,14 +16,17 @@
   programs.git = {
     enable = true;
       
-    userName = "Avery Lanning";
-    userEmail = "avery@lanning.org";
+    #settings.user.name = "AveryLanning";
+    #settings.user.email = "avery@lanning.org";
 
-    extraConfig = {
+    settings = {
         init.defaultBranch = "main";
+        user.name = "AveryLanning";
+        user.email = "avery@lanning.org";
+
     };
   };
-      
+
   #programs.yazi = {
   #  enable = true;
   #  enableNushellIntegration = true;
@@ -46,7 +49,14 @@
 
     extraConfig = "
 
+      set-option global tabstop 2
+      set-option global indentwidth 2
+
       #Remapping so all command keys remain in their original position
+     
+
+      #Something between Nushell and XMonad appear to set backspace to ^H, which kakoune is not recognizing
+      map global insert <c-h> '<backspace>'
 
       #row 1
       #map global normal q q # unchanged in colemak
@@ -142,6 +152,6 @@
   };
 
   home.packages = with pkgs; [
-    
+    xclip
   ];
 }

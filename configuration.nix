@@ -86,6 +86,9 @@
     git
     unzip
     qutebrowser
+    gammastep
+    calibre
+    acpi
   ];
 
   environment.variables = {
