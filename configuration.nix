@@ -87,8 +87,8 @@
     unzip
     qutebrowser
     gammastep
-    calibre
     acpi
+    sioyek
   ];
 
   environment.variables = {
