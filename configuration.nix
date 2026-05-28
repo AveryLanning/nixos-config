@@ -68,6 +68,11 @@
     windowManager.xmonad.enable = true;
   };
 
+  # Enable unfree packages
+  nixpkgs.config = {
+    allowUnfree = true;
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -89,7 +94,10 @@
     gammastep
     acpi
     sioyek
-  ];
+    zotero
+    spotify
+    weather
+];
 
   environment.variables = {
     EDITOR = "kak";

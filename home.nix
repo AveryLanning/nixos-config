@@ -12,6 +12,10 @@
   };
 
   programs.bash.enable = true;
+  
+  programs.nushell.extraEnv = {
+    NIX_PATH = "${builtins.getEnv "NIX_PATH"}:/home/avery/nixos-config/";
+  };
 
   programs.git = {
     enable = true;
