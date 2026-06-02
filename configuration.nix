@@ -84,7 +84,6 @@
     kakoune
     home-manager
     nushell
-    aerc
     notmuch
     yazi
     fd
@@ -97,7 +96,20 @@
     zotero
     spotify
     weather
-];
+    pinentry-curses
+    pass
+    himalaya
+    zk
+    e2fsprogs
+    dosfstools
+    exfatprogs
+    ntfs3g
+    f3
+    xclip
+    xdotool
+    keychain
+    xorg.xev
+  ];
 
   environment.variables = {
     EDITOR = "kak";

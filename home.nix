@@ -1,20 +1,49 @@
 { config, pkgs, ... }:
 
-{
+  {
   home.username = "avery";
   home.homeDirectory = "/home/avery";
 
-  home.stateVersion = "24.05";
+  home.stateVersion = "25.11";
 
   home.sessionVariables = {
     EDITOR = "kak";
     VISUAL = "kak";
+    SSH_AUTH_SOCK = "/run/user/1000/gnupg/S.gpg-agent.ssh";
+  };
+
+  home.file.".ssh/gpg_auth.pub" = {
+    text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC89vKRl6c3UxGvyhmv1FazcZ5FmuCEohnma5n4Dr0UB openpgp:0xC09C9072\n";
   };
 
   programs.bash.enable = true;
-  
-  programs.nushell.extraEnv = {
-    NIX_PATH = "${builtins.getEnv "NIX_PATH"}:/home/avery/nixos-config/";
+
+  programs.nushell = {
+    enable = true;
+
+   extraEnv = ''
+      gpg-connect-agent updatestartuptty /bye out+err> /dev/null
+   '';
+
+   extraConfig = ''
+     $env.config = ($env.config | upsert edit_mode "vi")
+     $env.config = ($env.config | upsert keybindings (
+       ($env.config.keybindings) ++ [
+         { name: vi_down,         modifier: none, keycode: char_n, mode: [vi_normal], event: { send: Down              } }
+         { name: vi_up,           modifier: none, keycode: char_e, mode: [vi_normal], event: { send: Up                } }
+         { name: vi_left,         modifier: none, keycode: char_h, mode: [vi_normal], event: { send: Left              } }
+         { name: vi_right,        modifier: none, keycode: char_i, mode: [vi_normal], event: { send: Right             } }
+         { name: vi_insert,       modifier: none, keycode: char_u, mode: [vi_normal], event: { send: ViChangeMode, mode: "insert" } }
+         { name: vi_insert_bol,   modifier: none, keycode: char_U, mode: [vi_normal], event: { send: ViChangeMode, mode: "insert" } }
+         { name: vi_delete_char,  modifier: none, keycode: char_s, mode: [vi_normal], event: { edit: Delete            } }
+         { name: vi_word_right,   modifier: none, keycode: char_f, mode: [vi_normal], event: { edit: MoveWordRightStart } }
+         { name: vi_word_left,    modifier: none, keycode: char_b, mode: [vi_normal], event: { edit: MoveWordLeft      } }
+         { name: vi_search,       modifier: none, keycode: char_k, mode: [vi_normal], event: { send: SearchHistory     } }
+         { name: vi_end_of_line,  modifier: none, keycode: char_l, mode: [vi_normal], event: { edit: MoveToLineEnd     } }
+         { name: vi_bol,          modifier: none, keycode: char_0, mode: [vi_normal], event: { edit: MoveToLineStart   } }
+        ]
+      ))
+    '';
   };
 
   programs.git = {
@@ -136,6 +165,29 @@
       ";
   };
 
+  programs.gpg.enable = true;
+
+  services.gpg-agent = {
+    enable = true;
+    pinentryPackage = pkgs.pinentry-curses;
+    enableSshSupport = true;
+    defaultCacheTtl = 36000;
+    defaultCacheTtlSsh = 36000;
+  };
+
+  programs.ssh = {
+    enable = true;
+    matchBlocks = {
+      "github.com" = {
+        identitiesOnly = true;
+  			identityFile = "~/.ssh/gpg_auth.pub";
+				extraOptions = {
+          IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
+        };
+      };
+    };
+  };
+
   xresources.properties = {
     "XTerm*background" = "#000000";
     "XTerm*foreground" = "#f8f8f2";
@@ -152,10 +204,9 @@
     "XTerm*color7"  = "#bbbbbb";
 
     "XTerm*faceName" = "monospace";
-    "XTerm*faceSize" = 11;
+    "XTerm*faceSize" = 12;
   };
 
   home.packages = with pkgs; [
-    xclip
   ];
 }
