@@ -182,7 +182,7 @@
         identitiesOnly = true;
   			identityFile = "~/.ssh/gpg_auth.pub";
 				extraOptions = {
-          IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
+          IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh"; #Hardcoded, but could change on another machine
         };
       };
     };
