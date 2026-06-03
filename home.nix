@@ -169,7 +169,7 @@
 
   services.gpg-agent = {
     enable = true;
-    pinentryPackage = pkgs.pinentry-curses;
+    pinentryPackage = pkgs.pinentry-tty;
     enableSshSupport = true;
     defaultCacheTtl = 36000;
     defaultCacheTtlSsh = 36000;
@@ -188,24 +188,111 @@
     };
   };
 
-  xresources.properties = {
-    "XTerm*background" = "#000000";
-    "XTerm*foreground" = "#f8f8f2";
+  services.polybar = {
+    enable = true;
+    package = pkgs.polybar;
+    script = ''
+      ${pkgs.bash}/bin/bash -c "polybar main &"
+    ''; 
 
-    "XTerm*cursorColor" = "#ff5555";
+    settings = {
+      "bar/main" = {
+        bottom = false;
+        width = "100%";
+        height = 24;
+        background = "#000000";
+        foreground = "#f8f8f2";
+        font-0 = "monospace:size=10";
+        modules-left = "xmonad";
+        modules-center = "date";
+        modules-right = "email battery";
+  			enable-ipc = true;
+		};
 
-    "XTerm*color0"  = "#000000";
-    "XTerm*color1"  = "#ff5555";
-    "XTerm*color2"  = "#50fa7b";
-    "XTerm*color3"  = "#f1fa8c";
-    "XTerm*color4"  = "#bd93f9";
-    "XTerm*color5"  = "#ff79c6";
-    "XTerm*color6"  = "#8be9fd";
-    "XTerm*color7"  = "#bbbbbb";
+      "module/date" = {
+        type = "internal/date";
+        interval = 1;
+        date = "%a %b %d";
+        time = "%H:%M:%S";
+        label = "%date% | %time%";
+      };
 
-    "XTerm*faceName" = "monospace";
-    "XTerm*faceSize" = 12;
+      "module/battery" = {
+        type = "internal/battery";
+        battery = "BAT1";
+        adapter = "AC";
+        full-at = 98;
+        label-charging = " | c%percentage%%";
+        label-discharging = " | d%percentage%%";
+        label-full = "Full";
+      };
+
+      "module/email" = {
+        type = "custom/script";
+        exec = "${pkgs.bash}/bin/bash -c 'himalaya envelope list 2>/dev/null | grep -c \"\\*\" || echo 0'";
+        interval = 300;
+        label = "Mail:%output%";
+      };
+    };
   };
+
+  #himalaya email client
+  home.file.".config/himalaya/config.toml".text = ''
+    [accounts.Porkbun]
+    default = true
+    email = "avery@lanning.org"
+    display-name = "Avery Lanning"
+    downloads-dir = "/home/avery/Downloads"
+    backend.type = "imap"
+    backend.host = "imap.porkbun.com"
+    backend.port = 993
+    backend.login = "avery@lanning.org"
+    backend.encryption.type = "tls"
+    backend.auth.type = "password"
+    backend.auth.command = "pass show email/porkbun"
+    message.send.backend.type = "smtp"
+    message.send.backend.host = "smtp.lanning.org"
+    message.send.backend.port = 465
+    message.send.backend.login = "avery@lanning.org"
+    message.send.backend.encryption.type = "tls"
+    message.send.backend.auth.type = "password"
+    message.send.backend.auth.command = "pass show email/porkbun"
+    [accounts.Porkbun.folder.aliases]
+    email = "avery@lanning.org"
+    inbox = "INBOX"
+    sent = "INBOX.Sent"
+    drafts = "INBOX.Drafts"
+    trash = "INBOX.Trash"
+  '';
+
+	#ghostty terminal emulator
+  home.file.".config/ghostty/config".text = ''
+    font-family = monospace
+    font-size = 13
+    background = #000000
+    foreground = #f8f8f2
+    shell-integration = detect
+    shell-integration-features = no-cursor
+  '';
+
+#  xresources.properties = {
+#    "XTerm*background" = "#000000";
+#    "XTerm*foreground" = "#f8f8f2";
+#
+#    "XTerm*cursorColor" = "#ff5555";
+
+#    "XTerm*color0"  = "#000000";
+#    "XTerm*color1"  = "#ff5555";
+#    "XTerm*color2"  = "#50fa7b";
+#    "XTerm*color3"  = "#f1fa8c";
+#    "XTerm*color4"  = "#bd93f9";
+#    "XTerm*color5"  = "#ff79c6";
+#    "XTerm*color6"  = "#8be9fd";
+#    "XTerm*color7"  = "#bbbbbb";
+
+#    "XTerm*faceName" = "monospace";
+#    "XTerm*faceSize" = 12;
+#  };
 
   home.packages = with pkgs; [
   ];

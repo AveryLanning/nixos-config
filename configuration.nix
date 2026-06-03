@@ -65,8 +65,33 @@
   #The xmonad desktop
   services.xserver = {
     enable = true;
-    windowManager.xmonad.enable = true;
+    windowManager.xmonad = {
+      enable = true;
+      enableContribAndExtras = true;
+      config = ''
+        import XMonad
+        import XMonad.Hooks.ManageDocks
+        import XMonad.Hooks.DynamicLog
+        import System.Exit
+
+        main :: IO ()
+        main = xmonad $ docks $ def
+          { terminal = "ghostty"
+          , startupHook = spawn "polybar main"
+          , manageHook = manageDocks <+> manageHook def
+          , layoutHook = avoidStruts $ layoutHook def
+          }
+      '';
+    };
   };
+
+ # enableContribAndExtras = true;
+   # config = ''
+   #   import XMonad
+   #   main = xmonad $ def
+   #     { terminal = "rio"}
+   # '';
+#  };
 
   # Enable unfree packages
   nixpkgs.config = {
@@ -78,9 +103,12 @@
   environment.systemPackages = with pkgs; [
     haskellPackages.xmonad
     haskellPackages.xmonad-contrib
-    xmobar #status bar
+    polybar #status bar
+    #xmobar #status bar
+    rofi #launcher
     dmenu #launcher
-    xterm #fallback terminal
+    ghostty #terminal emulator
+    #rio
     kakoune
     home-manager
     nushell
@@ -96,7 +124,7 @@
     zotero
     spotify
     weather
-    pinentry-curses
+    pinentry-tty
     pass
     himalaya
     zk
@@ -109,7 +137,8 @@
     xdotool
     keychain
     xorg.xev
-  ];
+    libreoffice
+];
 
   environment.variables = {
     EDITOR = "kak";
