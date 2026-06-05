@@ -71,8 +71,7 @@
       config = ''
         import XMonad
         import XMonad.Hooks.ManageDocks
-        import XMonad.Hooks.DynamicLog
-        import System.Exit
+        import Data.Map (fromList)
 
         main :: IO ()
         main = xmonad $ docks $ def
@@ -80,7 +79,13 @@
           , startupHook = spawn "polybar main"
           , manageHook = manageDocks <+> manageHook def
           , layoutHook = avoidStruts $ layoutHook def
+          , keys = \c -> myKeys c <> keys def c
           }
+
+        myKeys conf = fromList
+          [  ((mod4Mask, xK_p), spawn "rofi -show drun")
+          , ((mod4Mask .|. shiftMask, xK_p), spawn "rofi -show window")
+          ]
       '';
     };
   };
@@ -104,9 +109,7 @@
     haskellPackages.xmonad
     haskellPackages.xmonad-contrib
     polybar #status bar
-    #xmobar #status bar
     rofi #launcher
-    dmenu #launcher
     ghostty #terminal emulator
     #rio
     kakoune
@@ -123,21 +126,22 @@
     sioyek
     zotero
     spotify
-    weather
+    wego #Weather
     pinentry-tty
-    pass
-    himalaya
+    pass #Password Storage
+    himalaya #Email
     zk
+    #File formatting tools
     e2fsprogs
     dosfstools
     exfatprogs
     ntfs3g
-    f3
+    f3 #Used to test if flash drive is a scam
+    
     xclip
-    xdotool
-    keychain
-    xorg.xev
+    xev
     libreoffice
+    termdown
 ];
 
   environment.variables = {

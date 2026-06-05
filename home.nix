@@ -21,27 +21,33 @@
   programs.nushell = {
     enable = true;
 
-   extraEnv = ''
-      gpg-connect-agent updatestartuptty /bye out+err> /dev/null
-   '';
+    extraEnv = ''
+       gpg-connect-agent updatestartuptty /bye out+err> /dev/null
+    '';
 
-   extraConfig = ''
-     $env.config = ($env.config | upsert edit_mode "vi")
-     $env.config = ($env.config | upsert keybindings (
-       ($env.config.keybindings) ++ [
-         { name: vi_down,         modifier: none, keycode: char_n, mode: [vi_normal], event: { send: Down              } }
-         { name: vi_up,           modifier: none, keycode: char_e, mode: [vi_normal], event: { send: Up                } }
-         { name: vi_left,         modifier: none, keycode: char_h, mode: [vi_normal], event: { send: Left              } }
-         { name: vi_right,        modifier: none, keycode: char_i, mode: [vi_normal], event: { send: Right             } }
-         { name: vi_insert,       modifier: none, keycode: char_u, mode: [vi_normal], event: { send: ViChangeMode, mode: "insert" } }
-         { name: vi_insert_bol,   modifier: none, keycode: char_U, mode: [vi_normal], event: { send: ViChangeMode, mode: "insert" } }
-         { name: vi_delete_char,  modifier: none, keycode: char_s, mode: [vi_normal], event: { edit: Delete            } }
-         { name: vi_word_right,   modifier: none, keycode: char_f, mode: [vi_normal], event: { edit: MoveWordRightStart } }
-         { name: vi_word_left,    modifier: none, keycode: char_b, mode: [vi_normal], event: { edit: MoveWordLeft      } }
-         { name: vi_search,       modifier: none, keycode: char_k, mode: [vi_normal], event: { send: SearchHistory     } }
-         { name: vi_end_of_line,  modifier: none, keycode: char_l, mode: [vi_normal], event: { edit: MoveToLineEnd     } }
-         { name: vi_bol,          modifier: none, keycode: char_0, mode: [vi_normal], event: { edit: MoveToLineStart   } }
-        ]
+    extraConfig = ''
+      def weather-haven [] {
+        wego -owm-api-key (pass show api/OpenWeather) -f json Haven,Kansas,US| from json
+      }
+      def weat [location: string = "Wichita,US"] {
+        wego -owm-api-key (pass show api/OpenWeather) -l $location -f json | from json
+      }
+      $env.config = ($env.config | upsert edit_mode "vi")
+      $env.config = ($env.config | upsert keybindings (
+        ($env.config.keybindings) ++ [
+          { name: vi_down,         modifier: none, keycode: char_n, mode: [vi_normal], event: { send: Down              } }
+          { name: vi_up,           modifier: none, keycode: char_e, mode: [vi_normal], event: { send: Up                } }
+          { name: vi_left,         modifier: none, keycode: char_h, mode: [vi_normal], event: { send: Left              } }
+          { name: vi_right,        modifier: none, keycode: char_i, mode: [vi_normal], event: { send: Right             } }
+          { name: vi_insert,       modifier: none, keycode: char_u, mode: [vi_normal], event: { send: ViChangeMode, mode: "insert" } }
+          { name: vi_insert_bol,   modifier: none, keycode: char_U, mode: [vi_normal], event: { send: ViChangeMode, mode: "insert" } }
+          { name: vi_delete_char,  modifier: none, keycode: char_s, mode: [vi_normal], event: { edit: Delete            } }
+          { name: vi_word_right,   modifier: none, keycode: char_f, mode: [vi_normal], event: { edit: MoveWordRightStart } }
+          { name: vi_word_left,    modifier: none, keycode: char_b, mode: [vi_normal], event: { edit: MoveWordLeft      } }
+          { name: vi_search,       modifier: none, keycode: char_k, mode: [vi_normal], event: { send: SearchHistory     } }
+          { name: vi_end_of_line,  modifier: none, keycode: char_l, mode: [vi_normal], event: { edit: MoveToLineEnd     } }
+          { name: vi_bol,          modifier: none, keycode: char_0, mode: [vi_normal], event: { edit: MoveToLineStart   } }
+         ]
       ))
     '';
   };
@@ -203,9 +209,8 @@
         background = "#000000";
         foreground = "#f8f8f2";
         font-0 = "monospace:size=10";
-        modules-left = "xmonad";
         modules-center = "date";
-        modules-right = "email battery";
+        modules-right = "volume email battery";
   			enable-ipc = true;
 		};
 
@@ -229,10 +234,12 @@
 
       "module/email" = {
         type = "custom/script";
-        exec = "${pkgs.bash}/bin/bash -c 'himalaya envelope list 2>/dev/null | grep -c \"\\*\" || echo 0'";
+        exec = "${pkgs.writeShellScript "polybar-mail" ''
+          himalaya envelope list 2>/dev/null | grep -c '*' || echo 0
+        ''}";
         interval = 300;
         label = "Mail:%output%";
-      };
+			};
     };
   };
 
