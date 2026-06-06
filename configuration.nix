@@ -124,7 +124,6 @@
     gammastep
     acpi
     sioyek
-    zotero
     spotify
     wego #Weather
     pinentry-tty
