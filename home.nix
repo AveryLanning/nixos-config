@@ -27,10 +27,10 @@
 
     extraConfig = ''
       def weather-haven [] {
-        wego -owm-api-key (pass show api/OpenWeather) -f json Haven,Kansas,US| from json
+        wego -owm-api-key (pass show api&ai/OpenWeather) -f json Haven,Kansas,US| from json
       }
       def weat [location: string = "Wichita,US"] {
-        wego -owm-api-key (pass show api/OpenWeather) -l $location -f json | from json
+        wego -owm-api-key (pass show api&ai/OpenWeather) -l $location -f json | from json
       }
       $env.config = ($env.config | upsert edit_mode "vi")
       $env.config = ($env.config | upsert keybindings (

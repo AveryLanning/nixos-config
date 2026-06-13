@@ -90,6 +90,13 @@
     };
   };
 
+  services.syncthing =  {
+    enable = true;
+    user = "avery";
+    dataDir = "/home/avery/syncthing";
+    configDir = "/home/avery/.config/syncthing";
+  };
+
  # enableContribAndExtras = true;
    # config = ''
    #   import XMonad
@@ -98,7 +105,20 @@
    # '';
 #  };
 
-  # Enable unfree packages
+  nixpkgs.overlays = [
+    (final: prev: {
+      papis = prev.python3Packages.toPythonApplication (
+        prev.python3Packages.papis.overridePythonAttrs (old: {
+          propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [
+            prev.python3Packages.packaging
+            prev.python3Packages.pypdf
+          ];
+        })
+      );
+    })
+  ];
+
+# Enable unfree packages
   nixpkgs.config = {
     allowUnfree = true;
   };
@@ -111,7 +131,6 @@
     polybar #status bar
     rofi #launcher
     ghostty #terminal emulator
-    #rio
     kakoune
     home-manager
     nushell
@@ -121,6 +140,7 @@
     git
     unzip
     qutebrowser
+    nyxt
     gammastep
     acpi
     sioyek
@@ -128,8 +148,8 @@
     wego #Weather
     pinentry-tty
     pass #Password Storage
-    himalaya #Email
-    zk
+    himalaya #Emai
+    zk # Linked Notes Manager
     #File formatting tools
     e2fsprogs
     dosfstools
@@ -138,9 +158,11 @@
     f3 #Used to test if flash drive is a scam
     
     xclip
-    xev
+    syncthing
     libreoffice
     termdown
+    fzf
+    papis
 ];
 
   environment.variables = {
