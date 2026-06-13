@@ -57,7 +57,7 @@
   users.users.avery = {
     isNormalUser = true;
     description = "Avery Lanning";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "video" ];
     shell = pkgs.nushell;
     packages = with pkgs; [];
   };
@@ -72,19 +72,25 @@
         import XMonad
         import XMonad.Hooks.ManageDocks
         import Data.Map (fromList)
+        import Graphics.X11.ExtraTypes.XF86
 
         main :: IO ()
         main = xmonad $ docks $ def
           { terminal = "ghostty"
-          , startupHook = spawn "polybar main"
+          , startupHook = spawn "polybar main" >> spawn "gammastep -l 37.7:-97.3 -m randr"
           , manageHook = manageDocks <+> manageHook def
           , layoutHook = avoidStruts $ layoutHook def
-          , keys = \c -> myKeys c <> keys def c
+          , keys = \c -> keys def c <> myKeys c
           }
 
         myKeys conf = fromList
           [  ((mod4Mask, xK_p), spawn "rofi -show drun")
           , ((mod4Mask .|. shiftMask, xK_p), spawn "rofi -show window")
+			    , ((mod4Mask, xK_Print), spawn "maim ~/documents/pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
+   			  , ((mod4Mask .|. shiftMask, xK_Print), spawn "maim -s ~/documents/pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
+  			  , ((mod4Mask .|. controlMask, xK_Print), spawn "maim -s | xclip -selection clipboard -t image/png")
+  			  , ((0, xF86XK_MonBrightnessUp), spawn "brightnessctl set +10%")
+					, ((0, xF86XK_MonBrightnessDown), spawn "brightnessctl set 10%-")
           ]
       '';
     };
@@ -141,7 +147,7 @@
     unzip
     qutebrowser
     nyxt
-    gammastep
+    gammastep #Automatically shifts the screen red at night
     acpi
     sioyek
     spotify
@@ -163,7 +169,10 @@
     termdown
     fzf
     papis
-];
+    nsxiv #Image Viewer
+    maim  #Screenshots
+    brightnessctl
+  ];
 
   environment.variables = {
     EDITOR = "kak";
