@@ -91,6 +91,9 @@
   			  , ((mod4Mask .|. controlMask, xK_Print), spawn "maim -s | xclip -selection clipboard -t image/png")
   			  , ((0, xF86XK_MonBrightnessUp), spawn "brightnessctl set +10%")
 					, ((0, xF86XK_MonBrightnessDown), spawn "brightnessctl set 10%-")
+					, ((0, xF86XK_AudioRaiseVolume), spawn "pamixer --increase 5")
+          , ((0, xF86XK_AudioLowerVolume), spawn "pamixer --decrease 5")
+          , ((0, xF86XK_AudioMute), spawn "pamixer --toggle-mute")
           ]
       '';
     };
@@ -172,6 +175,10 @@
     nsxiv #Image Viewer
     maim  #Screenshots
     brightnessctl
+    bottom #System monitor
+    mpv #Keyboard video player
+    #pandoc #useful document converter to consider
+    pamixer #Audio control
   ];
 
   environment.variables = {
