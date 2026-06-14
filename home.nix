@@ -94,7 +94,9 @@
     enableSshSupport = true;
     defaultCacheTtl = 36000;
     defaultCacheTtlSsh = 36000;
-  };
+    maxCacheTtl = 36000;
+    maxCacheTtlSsh = 36000;
+};
 
   programs.ssh = {
     enable = true;
@@ -102,7 +104,7 @@
       "github.com" = {
 				extraOptions = {
           IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh"; #Hardcoded, but could change on another machine
-        };
+				};
       };
     };
   };

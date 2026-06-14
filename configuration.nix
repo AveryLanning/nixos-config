@@ -89,8 +89,8 @@
           [  ((mod4Mask, xK_p), spawn "rofi -show drun")
           , ((mod4Mask .|. shiftMask, xK_p), spawn "rofi -show window")
 			    , ((mod4Mask, xK_Print), spawn "maim ~/documents/pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
-   			  , ((mod4Mask .|. shiftMask, xK_Print), spawn "maim -s ~/documents/pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
-  			  , ((mod4Mask .|. controlMask, xK_Print), spawn "maim -s | xclip -selection clipboard -t image/png")
+          , ((mod4Mask .|. shiftMask, xK_Print), spawn "maim -s /tmp/screenshot.png && satty --filename /tmp/screenshot.png --output-filename ~/documents/pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
+          , ((mod4Mask .|. controlMask, xK_Print), spawn "maim -s | xclip -selection clipboard -t image/png")
   			  , ((0, xF86XK_MonBrightnessUp), spawn "brightnessctl set +10%")
 					, ((0, xF86XK_MonBrightnessDown), spawn "brightnessctl set 10%-")
 					, ((0, xF86XK_AudioRaiseVolume), spawn "pamixer --increase 5")
@@ -177,6 +177,7 @@
     papis
     nsxiv #Image Viewer
     maim  #Screenshots
+    satty #Basic markup for screenshots
     brightnessctl
     bottom #System monitor
     mpv #Keyboard video player
