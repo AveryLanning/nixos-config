@@ -19,6 +19,15 @@
     text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC89vKRl6c3UxGvyhmv1FazcZ5FmuCEohnma5n4Dr0UB openpgp:0xC09C9072\n";
   };
 
+  programs.autorandr = {
+    enable = true;
+    hooks = {
+      postswitch = {
+        "restart-xmonad" = "xmonad --restart";
+      };
+    };
+  };
+
   programs.bash.enable = true;
 
   programs.nushell = {
@@ -109,6 +118,23 @@
     };
   };
 
+  services.gammastep = {
+    enable = true;
+    provider = "manual";
+    latitude = 37.7;   # your approximate latitude
+    longitude = -97.3; # your approximate longitude (Wichita, KS)
+
+    temperature = {
+      day = 5500;
+      night = 2500;
+    };
+    
+    brightness = {
+      day = 1.0;
+      night = 0.6;
+    };
+  };
+
   services.polybar = {
     enable = true;
     package = pkgs.polybar;
@@ -145,6 +171,13 @@
         label-charging = " | c%percentage%%";
         label-discharging = " | d%percentage%%";
         label-full = "Full";
+      };
+
+      "module/volume" = {
+        type = "custom/script";
+        exec = "${pkgs.bash}/bin/bash -c 'pamixer --get-volume-human'";
+        interval = 2;
+        label = "Vol:%output% | ";
       };
 
       "module/email" = {

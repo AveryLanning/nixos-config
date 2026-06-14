@@ -69,9 +69,12 @@
     packages = with pkgs; [];
   };
 
-  services.logind.settings.Login = {
-    HandlePowerKey = "suspend";
-  };
+	services.logind = {
+    lidSwitch = "ignore";
+    lidSwitchDocked = "ignore";
+    lidSwitchExternalPower = "ignore";
+    settings.Login.HandlePowerKey = "suspend";
+	};
 
   #The xmonad desktop
   services.xserver = {
@@ -89,7 +92,6 @@
         main = xmonad $ docks $ def
           { terminal = "ghostty"
           , startupHook = spawn "polybar main"
-          >> spawn "gammastep -l 37.7:-97.3 -m randr"
           >> spawn "systemctl --user start gpg-agent-ssh.socket"
           , manageHook = manageDocks <+> manageHook def
           , layoutHook = avoidStruts $ layoutHook def
@@ -109,6 +111,39 @@
           , ((0, xF86XK_AudioMute), spawn "pamixer --toggle-mute")
           ]
       '';
+    };
+  };
+
+  services.acpid = {
+    enable = true;
+    handlers = {
+      lid = {
+        event = "button/lid.*";
+        action = ''
+          #!/bin/sh
+          export DISPLAY=:0
+          export XAUTHORITY=/home/avery/.Xauthority
+
+          LID_STATE=$(cat /proc/acpi/button/lid/LID0/state)
+
+          if echo "$LID_STATE" | grep -q "closed"; then
+            EXTERNAL=$(su avery -c 'DISPLAY=:0 XAUTHORITY=/home/avery/.Xauthority xrandr' | grep " connected" | grep -v "eDP")
+            if [ -n "$EXTERNAL" ]; then
+              su avery -c 'DISPLAY=:0 XAUTHORITY=/home/avery/.Xauthority xrandr --output eDP-1 --off'
+              sleep 0.5
+              pkill -u avery polybar
+              sleep 0.2
+              su avery -c 'DISPLAY=:0 XAUTHORITY=/home/avery/.Xauthority polybar main &'
+            fi
+          else
+            su avery -c 'DISPLAY=:0 XAUTHORITY=/home/avery/.Xauthority xrandr --output eDP-1 --auto'
+            sleep 0.5
+            pkill -u avery polybar
+            sleep 0.2
+            su avery -c 'DISPLAY=:0 XAUTHORITY=/home/avery/.Xauthority polybar main &'
+          fi
+        '';
+      };
     };
   };
 
@@ -168,7 +203,6 @@
     sioyek
     spotify
     wego #Weather
-    pinentry-tty
     pinentry-gtk2 #Fixes a bug involving availability to open gpg after display manager restarts
     pass #Password Storage
     himalaya #Emai
@@ -194,6 +228,9 @@
     mpv #Keyboard video player
     #pandoc #useful document converter to consider
     pamixer #Audio control
+    ripgrep #Faster grep
+    jq #JSON tool
+    bat #cat but with syntax highlighting
   ];
 
   environment.variables = {
