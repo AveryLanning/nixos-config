@@ -47,6 +47,13 @@
   #Configure Colemak keymap in TTY
   console.keyMap = "colemak";
 
+  #BIOS - enable this and run the commands below to update the BIOS
+  services.fwupd.enable = false;
+    #fwupdmgr refresh
+    #fwupdmgr get-updates
+    #fwupdmgr update
+
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -60,6 +67,10 @@
     extraGroups = [ "networkmanager" "wheel" "video" ];
     shell = pkgs.nushell;
     packages = with pkgs; [];
+  };
+
+  services.logind.settings.Login = {
+    HandlePowerKey = "suspend";
   };
 
   #The xmonad desktop

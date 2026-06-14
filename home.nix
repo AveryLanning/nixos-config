@@ -173,7 +173,7 @@
     backend.auth.type = "password"
     backend.auth.command = "pass show email/porkbun"
     message.send.backend.type = "smtp"
-    message.send.backend.host = "smtp.lanning.org"
+    message.send.backend.host = "smtp.porkbun.com"
     message.send.backend.port = 465
     message.send.backend.login = "avery@lanning.org"
     message.send.backend.encryption.type = "tls"
