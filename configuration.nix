@@ -77,7 +77,9 @@
         main :: IO ()
         main = xmonad $ docks $ def
           { terminal = "ghostty"
-          , startupHook = spawn "polybar main" >> spawn "gammastep -l 37.7:-97.3 -m randr"
+          , startupHook = spawn "polybar main"
+          >> spawn "gammastep -l 37.7:-97.3 -m randr"
+          >> spawn "systemctl --user start gpg-agent-ssh.socket"
           , manageHook = manageDocks <+> manageHook def
           , layoutHook = avoidStruts $ layoutHook def
           , keys = \c -> keys def c <> myKeys c
@@ -156,6 +158,7 @@
     spotify
     wego #Weather
     pinentry-tty
+    pinentry-gtk2 #Fixes a bug involving availability to open gpg after display manager restarts
     pass #Password Storage
     himalaya #Emai
     zk # Linked Notes Manager

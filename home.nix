@@ -90,7 +90,7 @@
 
   services.gpg-agent = {
     enable = true;
-    pinentryPackage = pkgs.pinentry-tty;
+    pinentryPackage = pkgs.pinentry-gtk2;
     enableSshSupport = true;
     defaultCacheTtl = 36000;
     defaultCacheTtlSsh = 36000;
@@ -100,8 +100,6 @@
     enable = true;
     matchBlocks = {
       "github.com" = {
-        identitiesOnly = true;
-  			identityFile = "~/.ssh/gpg_auth.pub";
 				extraOptions = {
           IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh"; #Hardcoded, but could change on another machine
         };
@@ -196,25 +194,6 @@
     shell-integration = detect
     shell-integration-features = no-cursor
   '';
-
-#  xresources.properties = {
-#    "XTerm*background" = "#000000";
-#    "XTerm*foreground" = "#f8f8f2";
-#
-#    "XTerm*cursorColor" = "#ff5555";
-
-#    "XTerm*color0"  = "#000000";
-#    "XTerm*color1"  = "#ff5555";
-#    "XTerm*color2"  = "#50fa7b";
-#    "XTerm*color3"  = "#f1fa8c";
-#    "XTerm*color4"  = "#bd93f9";
-#    "XTerm*color5"  = "#ff79c6";
-#    "XTerm*color6"  = "#8be9fd";
-#    "XTerm*color7"  = "#bbbbbb";
-
-#    "XTerm*faceName" = "monospace";
-#    "XTerm*faceSize" = 12;
-#  };
 
   home.packages = with pkgs; [
   ];
