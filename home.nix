@@ -126,7 +126,7 @@
 
     temperature = {
       day = 5500;
-      night = 2500;
+      night = 2000;
     };
     
     brightness = {
@@ -190,6 +190,11 @@
 			};
     };
   };
+
+  #Sioyek - home manager doesn't seem do toggle dark mode correctly
+  home.file.".config/sioyek/prefs_user.config".text = ''
+    startup_commands toggle_dark_mode
+  '';
 
   #himalaya email client
   home.file.".config/himalaya/config.toml".text = ''
