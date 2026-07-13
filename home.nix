@@ -38,6 +38,12 @@
     '';
 
     extraConfig = ''
+      def calibre [...args] {
+        with-env {LD_LIBRARY_PATH: $"(nix-build --no-out-link '<nixpkgs>' -A openssl.out)/lib"} {
+          ^calibre ...args
+        }
+      }
+
       def weather-haven [] {
         wego -owm-api-key (pass show api&ai/OpenWeather) -f json Haven,Kansas,US| from json
       }
@@ -126,12 +132,12 @@
 
     temperature = {
       day = 5500;
-      night = 2000;
+      night = 1500;
     };
     
     brightness = {
       day = 1.0;
-      night = 0.6;
+      night = 0.4;
     };
   };
 
@@ -170,7 +176,7 @@
         full-at = 98;
         label-charging = " | c%percentage%%";
         label-discharging = " | d%percentage%%";
-        label-full = "Full";
+        label-full = " | Full";
       };
 
       "module/volume" = {
@@ -209,14 +215,15 @@
     backend.login = "avery@lanning.org"
     backend.encryption.type = "tls"
     backend.auth.type = "password"
-    backend.auth.command = "pass show email/porkbun"
+    backend.auth.command = "pass show email_Web/porkbunEmail"
     message.send.backend.type = "smtp"
     message.send.backend.host = "smtp.porkbun.com"
     message.send.backend.port = 465
     message.send.backend.login = "avery@lanning.org"
     message.send.backend.encryption.type = "tls"
     message.send.backend.auth.type = "password"
-    message.send.backend.auth.command = "pass show email/porkbun"
+    message.send.backend.auth.command = "pass show email_Web/porkbunEmail"
+    envelope.list.page-size = 50
     [accounts.Porkbun.folder.aliases]
     email = "avery@lanning.org"
     inbox = "INBOX"

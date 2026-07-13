@@ -12,7 +12,29 @@
       };
     };
 
-    extraConfig = "
+    extraConfig = ''
+      # Load kakoune-lsp
+      eval %sh{kak-lsp}
+
+      # Start the server for Markdown buffers
+      hook global WinSetOption filetype=markdown %{ lsp-enable-window }
+
+      # Point Markdown at zk's language server
+      hook global BufSetOption filetype=markdown %{
+          set-option buffer lsp_servers %{
+              [zk]
+              args       = ["lsp"]
+              root_globs = [".zk"]
+          }
+      }
+
+      # Recent versions stopped adding these by default — add them back
+      map global goto s '<esc>:lsp-definition<ret>'      -docstring 'LSP definition'
+      map global goto p '<esc>:lsp-references<ret>'       -docstring 'LSP references'
+
+      # Optional: restore the breadcrumb in the modeline
+      set-option global modelinefmt "%opt{lsp_modeline} %opt{modelinefmt}"
+
 
       set-option global tabstop 2
       set-option global indentwidth 2
@@ -94,6 +116,22 @@
       #map global normal B B
       map global normal K N
       #map global normal M M
-      ";
+
+
+      # --- goto mode: invert to QWERTY, same logic as normal mode ---
+      # built-in goto commands, moved onto their QWERTY physical keys
+      map global goto f e   -docstring 'buffer end'
+      map global goto e k   -docstring 'buffer top'
+      map global goto d g   -docstring 'buffer top'
+      map global goto n j   -docstring 'buffer bottom'
+      map global goto u i   -docstring 'first non-blank'
+      map global goto i l   -docstring 'line end'
+      map global goto g t   -docstring 'window top'
+      map global goto t f   -docstring 'open selected file'
+      # LSP — gd follows a link / jumps to definition, gr lists backlinks
+      map global goto s '<esc>:lsp-definition<ret>'  -docstring 'definition / follow link'
+      map global goto p '<esc>:lsp-references<ret>'   -docstring 'references / backlinks'
+
+      '';
   };
 }

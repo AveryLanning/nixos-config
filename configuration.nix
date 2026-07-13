@@ -189,6 +189,7 @@
     rofi #launcher
     ghostty #terminal emulator
     kakoune
+    kakoune-lsp
     home-manager
     nushell
     notmuch
@@ -231,6 +232,11 @@
     ripgrep #Faster grep
     jq #JSON tool
     bat #cat but with syntax highlighting
+    calibre #Ebook library and reader
+    ladybugdb
+    rnote
+    freecad
+    visidata
   ];
 
   environment.variables = {
