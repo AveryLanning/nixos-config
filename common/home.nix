@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   imports = [
-    ./home/kakoune.nix
+    ./kakoune.nix
   ];
 
   home.username = "avery";
@@ -17,15 +17,6 @@
 
   home.file.".ssh/gpg_auth.pub" = {
     text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC89vKRl6c3UxGvyhmv1FazcZ5FmuCEohnma5n4Dr0UB openpgp:0xC09C9072\n";
-  };
-
-  programs.autorandr = {
-    enable = true;
-    hooks = {
-      postswitch = {
-        "restart-xmonad" = "xmonad --restart";
-      };
-    };
   };
 
   programs.bash.enable = true;
@@ -72,9 +63,6 @@
 
   programs.git = {
     enable = true;
-      
-    #settings.user.name = "AveryLanning";
-    #settings.user.email = "avery@lanning.org";
 
     settings = {
         init.defaultBranch = "main";
@@ -84,42 +72,24 @@
     };
   };
 
-  #programs.yazi = {
-  #  enable = true;
-  #  enableNushellIntegration = true;
-  #
-  #  keymap = {
-  #    manager = {
-  #      append_keymap = [
-  #        {
-  #          on = [ "z" ];
-  #          run = "quit";
-  #          desc = "quit";
-  #        }
-  #      ];
-  #    };
-  #  };
-  #};
-
   programs.gpg.enable = true;
 
   services.gpg-agent = {
     enable = true;
-    pinentryPackage = pkgs.pinentry-gtk2;
+    pinentry.package = pkgs.pinentry-gtk2;
     enableSshSupport = true;
     defaultCacheTtl = 36000;
     defaultCacheTtlSsh = 36000;
     maxCacheTtl = 36000;
     maxCacheTtlSsh = 36000;
-};
+  };
 
   programs.ssh = {
     enable = true;
-    matchBlocks = {
+    enableDefaultConfig = false;
+    settings = {
       "github.com" = {
-				extraOptions = {
-          IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh"; #Hardcoded, but could change on another machine
-				};
+        IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh"; #Hardcoded, but could change on another machine
       };
     };
   };
@@ -134,66 +104,10 @@
       day = 5500;
       night = 1500;
     };
-    
-    brightness = {
-      day = 1.0;
-      night = 0.4;
-    };
-  };
 
-  services.polybar = {
-    enable = true;
-    package = pkgs.polybar;
-    script = ''
-      ${pkgs.bash}/bin/bash -c "polybar main &"
-    ''; 
-
-    settings = {
-      "bar/main" = {
-        bottom = false;
-        width = "100%";
-        height = 24;
-        background = "#000000";
-        foreground = "#f8f8f2";
-        font-0 = "monospace:size=10";
-        modules-center = "date";
-        modules-right = "volume email battery";
-  			enable-ipc = true;
-		};
-
-      "module/date" = {
-        type = "internal/date";
-        interval = 1;
-        date = "%a %b %d";
-        time = "%H:%M:%S";
-        label = "%date% | %time%";
-      };
-
-      "module/battery" = {
-        type = "internal/battery";
-        battery = "BAT1";
-        adapter = "AC";
-        full-at = 98;
-        label-charging = " | c%percentage%%";
-        label-discharging = " | d%percentage%%";
-        label-full = " | Full";
-      };
-
-      "module/volume" = {
-        type = "custom/script";
-        exec = "${pkgs.bash}/bin/bash -c 'pamixer --get-volume-human'";
-        interval = 2;
-        label = "Vol:%output% | ";
-      };
-
-      "module/email" = {
-        type = "custom/script";
-        exec = "${pkgs.writeShellScript "polybar-mail" ''
-          himalaya envelope list 2>/dev/null | grep -c '*' || echo 0
-        ''}";
-        interval = 300;
-        label = "Mail:%output%";
-			};
+    settings.general = {
+      brightness-day = 1.0;
+      brightness-night = 0.4;
     };
   };
 
@@ -232,7 +146,7 @@
     trash = "INBOX.Trash"
   '';
 
-	#ghostty terminal emulator
+  #ghostty terminal emulator
   home.file.".config/ghostty/config".text = ''
     font-family = monospace
     font-size = 13
