@@ -2,6 +2,12 @@
 {
   imports = [
     ./kakoune.nix
+    ./zk.nix
+    ./papis.nix
+    ./nyxt.nix
+    ./visidata.nix
+    ./yazi.nix
+    ./sioyek.nix
   ];
 
   home.username = "avery";
@@ -25,6 +31,8 @@
     enable = true;
 
     extraEnv = ''
+       $env.FZF_DEFAULT_OPTS = "--bind=ctrl-n:down,ctrl-e:up"
+       $env.PATH = ($env.PATH | prepend $"($env.HOME)/.local/bin")
        gpg-connect-agent updatestartuptty /bye out+err> /dev/null
     '';
 
@@ -32,6 +40,12 @@
       def calibre [...args] {
         with-env {LD_LIBRARY_PATH: $"(nix-build --no-out-link '<nixpkgs>' -A openssl.out)/lib"} {
           ^calibre ...args
+        }
+      }
+
+      def zke [] {
+        with-env {SHELL: "${pkgs.bash}/bin/bash"} {
+          zk edit -i
         }
       }
 
@@ -122,7 +136,7 @@
     default = true
     email = "avery@lanning.org"
     display-name = "Avery Lanning"
-    downloads-dir = "/home/avery/Downloads"
+    downloads-dir = "/home/avery/downloads"
     backend.type = "imap"
     backend.host = "imap.porkbun.com"
     backend.port = 993
@@ -155,6 +169,20 @@
     shell-integration = detect
     shell-integration-features = no-cursor
   '';
+
+  #Kakoune seems to have xterm hardcoded - this makes the coloring match ghostty
+  xresources.properties = {
+    "XTerm*background" = "#000000";
+    "XTerm*foreground" = "#f8f8f2";
+  };
+
+  #System-wide GNOME/libadwaita dark mode setting
+  dconf.enable = true;
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+  };
 
   home.packages = with pkgs; [
   ];

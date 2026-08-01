@@ -59,6 +59,14 @@
     })
   ];
 
+  #Enabling so I can turn on System-wide GNOME/libadwaita dark mode
+  programs.dconf.enable = true;
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = "gtk";
+  };
+
   # Enable unfree packages
   nixpkgs.config = {
     allowUnfree = true;
@@ -113,7 +121,11 @@
     ladybugdb
     rnote
     freecad
+    f3d #Lightweight CAD viewer
+    chafa #terminal image viewer
     visidata
+    postgresql #Database
+    firefox #Many sites like to block the modal browsers
   ];
 
   environment.variables = {

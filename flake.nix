@@ -19,6 +19,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.avery = import ./hosts/laptop/home.nix;
+          home-manager.backupFileExtension = "hm-backup-old";
         }
       ];
     };
@@ -31,6 +32,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.avery = import ./hosts/server/home.nix;
+          home-manager.backupFileExtension = "hm-backup-old";
         }
       ];
     };

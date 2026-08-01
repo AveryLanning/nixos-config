@@ -40,11 +40,12 @@
         main :: IO ()
         main = xmonad $ docks $ def
           { terminal = "ghostty"
+          , modMask = mod4Mask
           , startupHook = spawn "polybar main"
           >> spawn "systemctl --user start gpg-agent-ssh.socket"
           , manageHook = manageDocks <+> manageHook def
           , layoutHook = avoidStruts $ layoutHook def
-          , keys = \c -> keys def c <> myKeys c
+          , keys = \c -> myKeys c <> keys def c
           }
 
         myKeys conf = fromList
@@ -106,6 +107,8 @@
     brightnessctl
     maim  #Screenshots
     satty #Basic markup for screenshots
+    moonlight-qt
+    xev #Useful for keyboard troubleshooting
   ];
 
   # This value determines the NixOS release from which the default
