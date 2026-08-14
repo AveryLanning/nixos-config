@@ -14,6 +14,10 @@
   boot.initrd.luks.devices."luks-7fd1c891-8a9b-48f6-8107-28f3f524c5d5".device = "/dev/disk/by-uuid/7fd1c891-8a9b-48f6-8107-28f3f524c5d5";
   networking.hostName = "averyNix"; # Define your hostname.
 
+	#This fixes the race condition that randomly breaks my mouse on bootup
+  systemd.services.display-manager.after = [ "systemd-udev-settle.service" ];
+  systemd.services.display-manager.wants = [ "systemd-udev-settle.service" ];
+
   #BIOS - enable this and run the commands below to update the BIOS
   services.fwupd.enable = false;
     #fwupdmgr refresh
@@ -96,6 +100,16 @@
       };
     };
   };
+
+
+	services.xserver.config = ''
+  Section "InputClass"
+    Identifier "Ignore touchscreen as pointer"
+    MatchProduct "ILIT2901"
+    MatchIsTouchscreen "true"
+    Option "SendCoreEvents" "false"
+  EndSection
+	'';
 
   # Laptop-only packages (xmonad stack + laptop hardware tools)
   environment.systemPackages = with pkgs; [

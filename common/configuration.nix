@@ -126,6 +126,7 @@
     visidata
     postgresql #Database
     firefox #Many sites like to block the modal browsers
+    teams-for-linux
   ];
 
   environment.variables = {

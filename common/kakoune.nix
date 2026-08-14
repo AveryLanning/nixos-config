@@ -55,7 +55,21 @@ EOF
 in
 {
   home.packages = [ papis-cite papis-note papis-open-source ];
-  programs.kakoune = {
+
+	 xdg.configFile."kak-lsp/kak-lsp.toml".text = ''
+    [language.rust]
+    filetypes = ["rust"]
+    roots = ["Cargo.toml"]
+    command = "rust-analyzer"
+
+    [language.rust.settings.rust-analyzer]
+    cargo.allFeatures = true
+    cargo.buildScripts.enable = true
+    checkOnSave.command = "clippy"
+    procMacro.enable = true
+  '';
+
+	programs.kakoune = {
     enable = true;
     config = {
       ui.enableMouse = false; #Keeps me from accidently moving around because I brushed the mousepad
@@ -68,6 +82,26 @@ in
     extraConfig = ''
       # Load kakoune-lsp
       eval %sh{kak-lsp --kakoune -s $kak_session}
+      # Start the server for Markdown buffers
+      hook global WinSetOption filetype=markdown %{ lsp-enable-window }
+      # Point Markdown at zk's language server
+      hook global BufSetOption filetype=markdown %{
+          set-option buffer lsp_servers %{
+              [zk]
+              args       = ["lsp"]
+              root_globs = [".zk"]
+          }
+      }
+
+      # Rust: enable LSP, inlay hints, hover, format on save
+      hook global WinSetOption filetype=rust %{
+          lsp-enable-window
+          lsp-inlay-hints-enable window
+          lsp-auto-hover-enable
+      }
+      hook global BufWritePre .*\.rs %{
+          lsp-formatting-sync
+      }
       # Start the server for Markdown buffers
       hook global WinSetOption filetype=markdown %{ lsp-enable-window }
       # Point Markdown at zk's language server
